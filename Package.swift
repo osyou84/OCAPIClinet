@@ -7,7 +7,8 @@ let package = Package(
     name: "OCAPIClient",
     platforms: [
         .iOS(.v13),
-        .tvOS(.v13)
+        .tvOS(.v13),
+        .watchOS(.v8)
     ],
     products: [
         .library(
