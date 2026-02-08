@@ -10,13 +10,22 @@ import Foundation
 import FoundationNetworking
 #endif
 
+/// HTTP API client that uses async/await for making network requests
 public class OCAPIClient {
     private let timeoutInterval: TimeInterval
     
+    /// Initializes a new API client instance
+    /// - Parameter timeoutInterval: The timeout interval for requests in seconds. Defaults to 20 seconds.
     public init(timeoutInterval: TimeInterval = 20) {
         self.timeoutInterval = timeoutInterval
     }
 
+    /// Fetches data from the specified request
+    /// - Parameters:
+    ///   - request: The request configuration conforming to OCRequestable
+    ///   - session: The URLSession to use. Defaults to URLSession.shared
+    /// - Returns: The response data
+    /// - Throws: OCNetworkError if the request fails
     public func fetch(_ request: OCRequestable, session: URLSession = .shared) async throws -> Data {
         try await withCheckedThrowingContinuation { continuation in
             guard var urlRequest = request.urlRequest else {
@@ -40,24 +49,11 @@ public class OCAPIClient {
                     return continuation.resume(throwing: OCNetworkError.invalidResponse)
                 }
 
-                let statusCode: Int = response.statusCode
-                switch response.statusCode {
-                case 200...299:
-                    continuation.resume(returning: data)
-                case 400...499:
-                    guard let clientError = OCNetworkError.ClientError(rawValue: statusCode) else {
-                        return continuation.resume(throwing: OCNetworkError.unknown(message: "\(statusCode)"))
-                    }
-                    
-                    return continuation.resume(throwing: OCNetworkError.client(clientError, data: data))
-                case 500...599:
-                    guard let serverError = OCNetworkError.ServerError(rawValue: statusCode) else {
-                        return continuation.resume(throwing: OCNetworkError.unknown(message: "\(statusCode)"))
-                    }
-                    
-                    return continuation.resume(throwing: OCNetworkError.server(serverError, data: data))
-                default:
-                    return continuation.resume(throwing: OCNetworkError.unknown(message: "\(statusCode)"))
+                do {
+                    let result = try OCResponseHandler.handleResponse(statusCode: response.statusCode, data: data)
+                    continuation.resume(returning: result)
+                } catch {
+                    continuation.resume(throwing: error)
                 }
             }
             .resume()

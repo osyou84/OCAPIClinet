@@ -10,6 +10,7 @@ import Foundation
 import FoundationNetworking
 #endif
 
+/// HTTP request method types
 public enum OCRequestMethod: String {
     case get
     case post
@@ -19,6 +20,7 @@ public enum OCRequestMethod: String {
     case head
 }
 
+/// HTTP request body encoding types
 public enum OCRequestBodyType {
     case json
     case formData
@@ -27,15 +29,31 @@ public enum OCRequestBodyType {
 public typealias OCRequestHeaders = [String: String]
 public typealias OCRequestParameters = [String: Any]
 
+/// Protocol defining the requirements for an HTTP request
 public protocol OCRequestable {
+    /// The base URL for the request (e.g., "https://api.example.com")
     var baseURL: String { get }
+    
+    /// The path to append to the base URL (e.g., "/users")
     var path: String { get }
+    
+    /// The HTTP method to use for the request
     var method: OCRequestMethod { get }
+    
+    /// The encoding type for the request body
     var bodyType: OCRequestBodyType { get }
+    
+    /// Optional HTTP headers for the request
     var headers: OCRequestHeaders? { get set }
+    
+    /// Optional parameters for the request (query params for GET, body for POST/PUT/PATCH)
     var parameters: OCRequestParameters? { get }
+    
+    /// Whether the request requires authorization
     var authorization: Bool { get }
     
+    /// Updates the headers for the request
+    /// - Parameter headers: The new headers to set
     mutating func updateHeaders(_ headers: OCRequestHeaders)
 }
 

@@ -12,13 +12,21 @@ import FoundationNetworking
 #endif
 import Combine
 
+/// HTTP API client that uses Combine publishers for making network requests
 public class OCAPIClientPublisher {
     private let timeoutInterval: TimeInterval
     
+    /// Initializes a new API client instance
+    /// - Parameter timeoutInterval: The timeout interval for requests in seconds. Defaults to 20 seconds.
     public init(timeoutInterval: TimeInterval = 20) {
         self.timeoutInterval = timeoutInterval
     }
     
+    /// Fetches data from the specified request as a Combine publisher
+    /// - Parameters:
+    ///   - request: The request configuration conforming to OCRequestable
+    ///   - session: The URLSession to use. Defaults to URLSession.shared
+    /// - Returns: A publisher that emits the response data or an error
     public func fetch(_ request: OCRequestable, session: URLSession = .shared) -> AnyPublisher<Data, OCNetworkError> {
         guard let urlRequest = request.urlRequest else {
             return Fail(error: OCNetworkError.invalidRequest).eraseToAnyPublisher()
@@ -36,24 +44,13 @@ public class OCAPIClientPublisher {
                     return Fail(error: .invalidResponse).eraseToAnyPublisher()
                 }
                 
-                let statusCode: Int = response.statusCode
-                switch response.statusCode {
-                case 200...299:
-                    return Future() { $0(.success(output.data)) }.eraseToAnyPublisher()
-                case 400...499:
-                    guard let clientError = OCNetworkError.ClientError(rawValue: statusCode) else {
-                        return Fail(error: .unknown(message: "\(statusCode)")).eraseToAnyPublisher()
-                    }
-                    
-                    return Fail(error: .client(clientError, data: output.data)).eraseToAnyPublisher()
-                case 500...599:
-                    guard let serverError = OCNetworkError.ServerError(rawValue: statusCode) else {
-                        return Fail(error: .unknown(message: "\(statusCode)")).eraseToAnyPublisher()
-                    }
-                    
-                    return Fail(error: .server(serverError, data: output.data)).eraseToAnyPublisher()
-                default:
-                    return Fail(error: .unknown(message: "\(statusCode)")).eraseToAnyPublisher()
+                do {
+                    let result = try OCResponseHandler.handleResponse(statusCode: response.statusCode, data: output.data)
+                    return Future() { $0(.success(result)) }.eraseToAnyPublisher()
+                } catch let error as OCNetworkError {
+                    return Fail(error: error).eraseToAnyPublisher()
+                } catch {
+                    return Fail(error: .unknown()).eraseToAnyPublisher()
                 }
             }
             .eraseToAnyPublisher()
