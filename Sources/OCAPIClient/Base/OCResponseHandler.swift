@@ -11,7 +11,7 @@ import FoundationNetworking
 #endif
 
 /// Handles HTTP response status codes and converts them to appropriate errors
-enum OCResponseHandler {
+internal enum OCResponseHandler {
     /// Validates the HTTP response status code and returns data or throws an error
     /// - Parameters:
     ///   - statusCode: The HTTP status code

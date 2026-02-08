@@ -55,7 +55,7 @@ final class OCAPIClientTests: XCTestCase {
         XCTAssertEqual(error.errorDescription, "Invalid request configuration")
     }
     
-    func testNetworkLostErrorDescription() {
+    func testCollectionLostErrorDescription() {
         let error = OCNetworkError.collectionLost
         XCTAssertEqual(error.errorDescription, "Network connection lost")
     }
