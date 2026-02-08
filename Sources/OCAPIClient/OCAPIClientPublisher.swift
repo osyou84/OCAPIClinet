@@ -6,9 +6,13 @@
 //
 
 import Foundation
+// Swift 6 on Linux: URLSession types are in FoundationNetworking module
+// Swift 6のLinux環境では、URLSession型はFoundationNetworkingモジュールにあります
 #if canImport(FoundationNetworking)
 import FoundationNetworking
 #endif
+// Combine is only available on Apple platforms
+// CombineはAppleプラットフォームでのみ利用可能です
 #if canImport(Combine)
 import Combine
 #endif

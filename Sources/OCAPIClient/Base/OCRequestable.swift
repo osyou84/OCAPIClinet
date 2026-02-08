@@ -6,6 +6,8 @@
 //
 
 import Foundation
+// Swift 6 on Linux: URLRequest and URL types are in FoundationNetworking module
+// Swift 6のLinux環境では、URLRequestやURL型はFoundationNetworkingモジュールにあります
 #if canImport(FoundationNetworking)
 import FoundationNetworking
 #endif

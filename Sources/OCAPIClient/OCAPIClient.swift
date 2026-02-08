@@ -6,6 +6,8 @@
 //
 
 import Foundation
+// Swift 6 on Linux: URLSession and networking types are in FoundationNetworking module
+// Swift 6のLinux環境では、URLSessionなどのネットワーク型はFoundationNetworkingモジュールにあります
 #if canImport(FoundationNetworking)
 import FoundationNetworking
 #endif
