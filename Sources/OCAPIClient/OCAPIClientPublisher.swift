@@ -6,8 +6,14 @@
 //
 
 import Foundation
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
+#if canImport(Combine)
 import Combine
+#endif
 
+#if canImport(Combine)
 public class OCApiClientPublisher {
     private let timeoutInterval: TimeInterval
     
@@ -61,3 +67,4 @@ extension URLSession.DataTaskPublisher.Failure {
         return errorCode == NSURLErrorNotConnectedToInternet || errorCode == NSURLErrorDataNotAllowed
     }
 }
+#endif

@@ -1,4 +1,4 @@
-// swift-tools-version:5.5
+// swift-tools-version:6.0
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -18,9 +18,15 @@ let package = Package(
     targets: [
         .target(
             name: "OCAPIClient",
-            dependencies: []),
+            dependencies: [],
+            swiftSettings: [
+                .swiftLanguageMode(.v6)
+            ]),
         .testTarget(
             name: "OCAPIClientTests",
-            dependencies: ["OCAPIClient"]),
+            dependencies: ["OCAPIClient"],
+            swiftSettings: [
+                .swiftLanguageMode(.v6)
+            ]),
     ]
 )
