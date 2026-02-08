@@ -25,10 +25,10 @@ extension OCNetworkError {
         case methodNotAllowed = 405
         case proxyAuthenticationRequired = 407
         case requestTimeout = 408
-        case confilict = 409
+        case conflict = 409
         case gone = 410
         case lengthRequired = 411
-        case proconditionFailed = 412
+        case preconditionFailed = 412
         case payloadTooLarge = 413
         case uriTooLong = 414
         case unsupportedMediaType = 415

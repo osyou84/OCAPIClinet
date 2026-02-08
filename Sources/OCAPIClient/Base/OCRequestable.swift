@@ -6,6 +6,9 @@
 //
 
 import Foundation
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 
 public enum OCRequestMethod: String {
     case get
@@ -37,7 +40,7 @@ public protocol OCRequestable {
 }
 
 extension OCRequestable {
-    public var urlRequst: URLRequest? {
+    public var urlRequest: URLRequest? {
         guard let url = url else { return nil }
         
         var request = URLRequest(url: url)

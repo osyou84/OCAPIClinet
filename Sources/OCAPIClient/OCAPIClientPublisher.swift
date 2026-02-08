@@ -1,14 +1,18 @@
 //
-//  OCApiClientPublisher.swift
+//  OCAPIClientPublisher.swift
 //  
 //
 //  Created by Naoya on 2022/03/26.
 //
 
+#if canImport(Combine)
 import Foundation
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 import Combine
 
-public class OCApiClientPublisher {
+public class OCAPIClientPublisher {
     private let timeoutInterval: TimeInterval
     
     public init(timeoutInterval: TimeInterval = 20) {
@@ -16,7 +20,7 @@ public class OCApiClientPublisher {
     }
     
     public func fetch(_ request: OCRequestable, session: URLSession = .shared) -> AnyPublisher<Data, OCNetworkError> {
-        guard let urlRequest = request.urlRequst else {
+        guard let urlRequest = request.urlRequest else {
             return Fail(error: OCNetworkError.invalidRequest).eraseToAnyPublisher()
         }
         
@@ -61,3 +65,4 @@ extension URLSession.DataTaskPublisher.Failure {
         return errorCode == NSURLErrorNotConnectedToInternet || errorCode == NSURLErrorDataNotAllowed
     }
 }
+#endif

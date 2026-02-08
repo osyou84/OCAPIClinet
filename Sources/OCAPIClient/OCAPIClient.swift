@@ -6,6 +6,9 @@
 //
 
 import Foundation
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 
 public class OCAPIClient {
     private let timeoutInterval: TimeInterval
@@ -16,7 +19,7 @@ public class OCAPIClient {
 
     public func fetch(_ request: OCRequestable, session: URLSession = .shared) async throws -> Data {
         try await withCheckedThrowingContinuation { continuation in
-            guard var urlRequest = request.urlRequst else {
+            guard var urlRequest = request.urlRequest else {
                 return continuation.resume(throwing: OCNetworkError.invalidRequest)
             }
             
