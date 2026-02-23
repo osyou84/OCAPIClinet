@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum OCNetworkError: Error {
+public enum OCNetworkError: Error, Sendable {
     case invalidResponse
     case invalidRequest
     case client(ClientError, data: Data?)
