@@ -15,7 +15,7 @@ public final class OCAPIClient: Sendable {
     }
 
     public func fetch(_ request: OCRequestable, session: URLSession = .shared) async throws -> Data {
-        guard var urlRequest = request.urlRequst else {
+        guard var urlRequest = request.urlRequest else {
             throw OCNetworkError.invalidRequest
         }
 
@@ -28,7 +28,7 @@ public final class OCAPIClient: Sendable {
             if error.domain == NSURLErrorDomain, error.code == NSURLErrorTimedOut {
                 throw OCNetworkError.client(.requestTimeout, data: nil)
             } else if error.code == NSURLErrorNotConnectedToInternet || error.code == NSURLErrorDataNotAllowed {
-                throw OCNetworkError.collectionLost
+                throw OCNetworkError.connectionLost
             } else {
                 throw OCNetworkError.unknown(message: error.localizedDescription)
             }

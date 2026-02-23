@@ -1,6 +1,6 @@
 //
 //  OCRequestable.swift
-//  
+//
 //
 //  Created by Naoya on 2022/03/26.
 //
@@ -22,7 +22,7 @@ public enum OCRequestBodyType {
 }
 
 public typealias OCRequestHeaders = [String: String]
-public typealias OCRequestParameters = [String: Any]
+public typealias OCRequestParameters = [String: any Sendable]
 
 public protocol OCRequestable {
     var baseURL: String { get }
@@ -32,48 +32,48 @@ public protocol OCRequestable {
     var headers: OCRequestHeaders? { get set }
     var parameters: OCRequestParameters? { get }
     var authorization: Bool { get }
-    
+
     mutating func updateHeaders(_ headers: OCRequestHeaders)
 }
 
 extension OCRequestable {
-    public var urlRequst: URLRequest? {
+    public var urlRequest: URLRequest? {
         guard let url = url else { return nil }
-        
+
         var request = URLRequest(url: url)
         request.httpMethod = method.rawValue.uppercased()
         request.allHTTPHeaderFields = headers
         request.httpBody = body
-        
+
         return request
     }
-    
+
     private var url: URL? {
         guard var urlComponents = URLComponents(string: baseURL) else {
             return nil
         }
-        
+
         urlComponents.path += path
         urlComponents.queryItems = queryItems
-        
+
         return urlComponents.url
     }
-    
+
     private var queryItems: [URLQueryItem]? {
         guard method == .get, let parameters = parameters else {
             return nil
         }
-        
+
         return parameters.compactMap {
             return URLQueryItem(name: $0.key, value: String(describing: $0.value))
         }
     }
-    
+
     private var body: Data? {
         guard [.post, .put, .patch].contains(method), let parameters = parameters else {
             return nil
         }
-        
+
         switch bodyType {
         case .json:
             return try? JSONSerialization.data(withJSONObject: parameters, options: .prettyPrinted)
@@ -86,7 +86,7 @@ extension OCRequestable {
                 allowed.remove(charactersIn: "\(generalDelimitersToEncode)\(subDelimitersToEncode)")
                 return allowed
             }()
-            
+
             return parameters
                 .map { key, value in
                     let escapedKey = "\(key)".addingPercentEncoding(withAllowedCharacters: urlQueryValueAllowed) ?? ""
@@ -97,7 +97,7 @@ extension OCRequestable {
                 .data(using: .utf8)
         }
     }
-    
+
     mutating func updateHeaders(_ headers: OCRequestHeaders) {
         self.headers = headers
     }

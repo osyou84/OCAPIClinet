@@ -1,5 +1,5 @@
 //
-//  OCApiClientPublisher.swift
+//  OCAPIClientPublisher.swift
 //
 //
 //  Created by Naoya on 2022/03/26.
@@ -8,7 +8,7 @@
 import Foundation
 import Combine
 
-public final class OCApiClientPublisher: @unchecked Sendable {
+public final class OCAPIClientPublisher: Sendable {
     private let timeoutInterval: TimeInterval
 
     public init(timeoutInterval: TimeInterval = 20) {
@@ -16,7 +16,7 @@ public final class OCApiClientPublisher: @unchecked Sendable {
     }
 
     public func fetch(_ request: OCRequestable, session: URLSession = .shared) -> AnyPublisher<Data, OCNetworkError> {
-        guard var urlRequest = request.urlRequst else {
+        guard var urlRequest = request.urlRequest else {
             return Fail(error: OCNetworkError.invalidRequest).eraseToAnyPublisher()
         }
 
@@ -25,7 +25,8 @@ public final class OCApiClientPublisher: @unchecked Sendable {
         return session.dataTaskPublisher(for: urlRequest)
             .subscribe(on: DispatchQueue.global())
             .mapError { error -> OCNetworkError in
-                guard !error.isNetworkError else { return .collectionLost }
+                if error.isNetworkError { return .connectionLost }
+                if error.errorCode == NSURLErrorTimedOut { return .client(.requestTimeout, data: nil) }
                 return .unknown()
             }
             .flatMap { output -> AnyPublisher<Data, OCNetworkError> in

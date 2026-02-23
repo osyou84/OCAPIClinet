@@ -1,6 +1,6 @@
 //
 //  OSNetworkError.swift
-//  
+//
 //
 //  Created by Naoya on 2022/03/26.
 //
@@ -12,12 +12,12 @@ public enum OCNetworkError: Error, Sendable {
     case invalidRequest
     case client(ClientError, data: Data?)
     case server(ServerError, data: Data?)
-    case collectionLost
+    case connectionLost
     case unknown(message: String? = nil)
 }
 
 extension OCNetworkError {
-    public enum ClientError: Int, Error {
+    public enum ClientError: Int, Sendable {
         case badRequest = 400
         case unauthorized = 401
         case forbidden = 403
@@ -25,10 +25,10 @@ extension OCNetworkError {
         case methodNotAllowed = 405
         case proxyAuthenticationRequired = 407
         case requestTimeout = 408
-        case confilict = 409
+        case conflict = 409
         case gone = 410
         case lengthRequired = 411
-        case proconditionFailed = 412
+        case preconditionFailed = 412
         case payloadTooLarge = 413
         case uriTooLong = 414
         case unsupportedMediaType = 415
@@ -42,14 +42,14 @@ extension OCNetworkError {
         case requestHeaderFieldsTooLarge = 431
         case unavailableForLegalReasons = 451
     }
-    
-    public enum ServerError: Int, Error {
+
+    public enum ServerError: Int, Sendable {
         case internalServerError = 500
         case notImplemented = 501
         case badGateway = 502
         case serviceUnavailable = 503
         case gatewayTimeout = 504
-        case hTTPVersionNotSupported = 505
+        case httpVersionNotSupported = 505
         case variantAlsoNegotiates = 506
         case notExtended = 510
         case networkAuthenticationRequired = 511
