@@ -1,6 +1,6 @@
 # OCAPIClient
 
-[![GitHub release](https://img.shields.io/github/v/release/osyou84/OCAPIClinet)](https://github.com/osyou84/OCAPIClinet/releases/latest)
+[![GitHub release](https://img.shields.io/github/release/osyou84/OCAPIClinet)](https://github.com/osyou84/OCAPIClinet/releases/latest)
 [![Swift](https://img.shields.io/badge/Swift-6.0-orange)](https://swift.org)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue)](https://github.com/osyou84/OCAPIClinet/blob/master/LICENSE)
 
